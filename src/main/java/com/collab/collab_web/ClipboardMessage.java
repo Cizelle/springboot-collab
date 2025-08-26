@@ -3,7 +3,7 @@ package com.collab.collab_web;
 public class ClipboardMessage {
     private String user;
     private String type; // "text" or "image"
-    private String data; // text or base64 image
+    private String data;
 
     public ClipboardMessage() {
     }

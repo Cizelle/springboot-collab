@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Collab App - Room</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+  <h2>Collab App</h2>
+  <p id="roomInfo"></p>
+
+  <div id="nav">
+    <button onclick="showSection('chat')">Chat</button>
+    <button onclick="showSection('whiteboard')">Whiteboard</button>
+    <button onclick="showSection('docSec')">Document</button>
+    <button onclick="showSection('clipboard')">Clipboard</button>
+  </div>
+
+  <!-- Chat -->
+  <div id="chat" class="section">
+    <h3>Chat</h3>
+    <div id="chatBox"></div>
+    <input type="text" id="msgInput" placeholder="Type message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <!-- Whiteboard -->
+  <div id="whiteboard" class="section">
+    <h3>Whiteboard</h3>
+    <canvas id="board" width="600" height="300"></canvas><br>
+    <button onclick="setTool('brush')">🖌 Brush</button>
+    <button onclick="setTool('eraser')">🩹 Eraser</button>
+  </div>
+
+  <!-- Document -->
+  <div id="docSec" class="section">
+    <h3>Document</h3>
+    <textarea id="doc" placeholder="Start typing..."></textarea>
+  </div>
+
+  <!-- Clipboard -->
+  <div id="clipboard" class="section">
+    <h3>Clipboard</h3>
+    <button onclick="copyFromClipboard()">📋 Sync My Clipboard</button>
+    <div id="clipboardBox"><i>No clipboard items yet</i></div>
+  </div>
+
+  <script src="room.js"></script>
+</body>
+</html>
