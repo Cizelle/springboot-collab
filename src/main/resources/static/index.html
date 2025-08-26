@@ -2,31 +2,58 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Collab App - Chat + Whiteboard + Document</title>
+  <title>Collab App</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 </head>
 <body>
   <h2>Collab App</h2>
 
-  <h3>Chat</h3>
-  <div id="chat"></div>
-  <input type="text" id="msgInput" placeholder="Type message..." />
-  <button onclick="sendMessage()">Send</button>
-
-  <h3>Whiteboard</h3>
-  <canvas id="board" width="600" height="300"></canvas>
-
-  <h3>Document</h3>
-  <textarea id="doc" placeholder="Start typing..."></textarea>
-
-  <h3>Clipboard</h3>
-  <button onclick="copyFromClipboard()">📋 Sync My Clipboard</button>
-  <div id="clipboardBox">
-    <i>No clipboard items yet</i>
+  <!-- Navigation buttons -->
+  <div id="nav">
+    <button onclick="showSection('chatSection')">💬 Chat</button>
+    <button onclick="showSection('boardSection')">🖊 Whiteboard</button>
+    <button onclick="showSection('docSection')">📄 Document</button>
+    <button onclick="showSection('clipSection')">📋 Clipboard</button>
   </div>
 
+  <!-- Sections -->
+  <div id="chatSection" class="section">
+    <h3>Chat</h3>
+    <div id="chat"></div>
+    <input type="text" id="msgInput" placeholder="Type message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+<div id="boardSection" class="section hidden">
+  <h3>Whiteboard</h3>
+
+  <!-- Whiteboard controls -->
+  <div id="boardControls">
+    <label>Color: <input type="color" id="colorPicker" value="#000000"></label>
+    <label>Size: <input type="range" id="sizePicker" min="1" max="20" value="2"></label>
+    <button onclick="toggleEraser()">Eraser</button>
+    <button onclick="clearBoard()">Clear</button>
+  </div>
+
+  <canvas id="board" width="600" height="300"></canvas>
+</div>
+
+
+  <div id="docSection" class="section hidden">
+    <h3>Document</h3>
+    <textarea id="doc" placeholder="Start typing..."></textarea>
+  </div>
+
+  <div id="clipSection" class="section hidden">
+    <h3>Clipboard</h3>
+    <button onclick="copyFromClipboard()">📋 Sync My Clipboard</button>
+    <div id="clipboardBox">
+      <i>No clipboard items yet</i>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

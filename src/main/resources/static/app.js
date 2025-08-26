@@ -1,6 +1,13 @@
 let stompClient = null;
 let username = prompt("Enter your username:") || "Anonymous";
 
+// --- Section Switching ---
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+}
+
+// --- WebSocket connect ---
 function connect() {
   const socket = new SockJS('/ws');
   stompClient = Stomp.over(socket);
@@ -8,18 +15,18 @@ function connect() {
   stompClient.connect({}, (frame) => {
     console.log("Connected: " + frame);
 
-    // Chat
+    // Chat subscription
     stompClient.subscribe('/topic/messages', (message) => {
       showMessage(message.body);
     });
 
-    // Whiteboard
+    // Whiteboard subscription
     stompClient.subscribe('/topic/whiteboard', (msg) => {
       const data = JSON.parse(msg.body);
       drawOnCanvas(data.x, data.y, false);
     });
 
-    // Document
+    // Document subscription
     stompClient.subscribe('/topic/document', (msg) => {
       const data = JSON.parse(msg.body);
       const docArea = document.getElementById("doc");
@@ -28,7 +35,7 @@ function connect() {
       }
     });
 
-    // Clipboard
+    // Clipboard subscription
     stompClient.subscribe('/topic/clipboard', (msg) => {
       const data = JSON.parse(msg.body);
       const box = document.getElementById("clipboardBox");
@@ -61,30 +68,6 @@ function showMessage(msg) {
   p.textContent = msg;
   chat.appendChild(p);
   chat.scrollTop = chat.scrollHeight;
-}
-
-// --- Whiteboard ---
-const canvas = document.getElementById("board");
-const ctx = canvas.getContext("2d");
-let drawing = false;
-
-canvas.addEventListener("mousedown", () => drawing = true);
-canvas.addEventListener("mouseup", () => drawing = false);
-canvas.addEventListener("mousemove", draw);
-
-function draw(e) {
-  if (!drawing) return;
-  const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-
-  drawOnCanvas(x, y, true);
-  stompClient.send("/app/draw", {}, JSON.stringify({ x, y }));
-}
-
-function drawOnCanvas(x, y, isLocal) {
-  ctx.fillStyle = isLocal ? "black" : "red";
-  ctx.fillRect(x, y, 2, 2);
 }
 
 // --- Document ---
@@ -126,5 +109,74 @@ function copyFromClipboard() {
     alert("Clipboard access denied. Please allow permissions.");
   });
 }
+
+// --- Whiteboard ---
+const canvas = document.getElementById("board");
+const ctx = canvas.getContext("2d");
+let drawing = false;
+
+// Brush settings
+let brushColor = "#000000";
+let brushSize = 2;
+let erasing = false;
+
+document.getElementById("colorPicker").addEventListener("input", (e) => {
+  brushColor = e.target.value;
+  erasing = false; // switch back to brush if picking color
+});
+document.getElementById("sizePicker").addEventListener("input", (e) => {
+  brushSize = e.target.value;
+});
+
+canvas.addEventListener("mousedown", (e) => {
+  drawing = true;
+  ctx.beginPath();
+  ctx.moveTo(e.offsetX, e.offsetY);
+});
+canvas.addEventListener("mouseup", () => drawing = false);
+canvas.addEventListener("mouseout", () => drawing = false);
+canvas.addEventListener("mousemove", draw);
+
+function draw(e) {
+  if (!drawing) return;
+  const rect = canvas.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  drawOnCanvas(x, y, brushColor, brushSize, erasing, true);
+  stompClient.send("/app/draw", {}, JSON.stringify({ x, y, color: brushColor, size: brushSize, eraser: erasing }));
+}
+
+function drawOnCanvas(x, y, color, size, isEraser, isLocal) {
+  ctx.strokeStyle = isEraser ? "#FFFFFF" : (color || "black");
+  ctx.lineWidth = size;
+  ctx.lineCap = "round";
+
+  ctx.lineTo(x, y);
+  ctx.stroke();
+}
+
+// Clear board (local + sync)
+function clearBoard() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  stompClient.send("/app/draw", {}, JSON.stringify({ clear: true }));
+}
+
+// Eraser toggle
+function toggleEraser() {
+  erasing = !erasing;
+}
+
+// Subscription update
+stompClient.subscribe('/topic/whiteboard', (msg) => {
+  const data = JSON.parse(msg.body);
+
+  if (data.clear) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  } else {
+    drawOnCanvas(data.x, data.y, data.color, data.size, data.eraser, false);
+  }
+});
+
 
 connect();
