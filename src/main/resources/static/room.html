@@ -8,44 +8,67 @@
   <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 </head>
 <body>
-  <h2>Collab App</h2>
-  <p id="roomInfo"></p>
+  <header>
+    <h2>🚀 Collab App</h2>
+    <p id="roomInfo"></p>
+  </header>
 
-  <div id="nav">
-    <button onclick="showSection('chat')">Chat</button>
-    <button onclick="showSection('whiteboard')">Whiteboard</button>
-    <button onclick="showSection('docSec')">Document</button>
-    <button onclick="showSection('clipboard')">Clipboard</button>
-  </div>
+  <main class="container">
+    <!-- Left: tools & sections -->
+    <div class="content">
+      <nav id="nav">
+        <button onclick="showSection('chat')">💬 Chat</button>
+        <button onclick="showSection('whiteboard')">🎨 Whiteboard</button>
+        <button onclick="showSection('docSec')">📝 Document</button>
+        <button onclick="showSection('clipboard')">📋 Clipboard</button>
+      </nav>
 
-  <!-- Chat -->
-  <div id="chat" class="section">
-    <h3>Chat</h3>
-    <div id="chatBox"></div>
-    <input type="text" id="msgInput" placeholder="Type message..." />
-    <button onclick="sendMessage()">Send</button>
-  </div>
+      <!-- Chat -->
+      <div id="chat" class="section card">
+        <h3>💬 Chat</h3>
+        <div id="chatBox"></div>
+        <div class="inputRow">
+          <input type="text" id="msgInput" placeholder="Type message..." />
+          <button onclick="sendMessage()">Send</button>
+        </div>
+      </div>
 
-  <!-- Whiteboard -->
-  <div id="whiteboard" class="section">
-    <h3>Whiteboard</h3>
-    <canvas id="board" width="600" height="300"></canvas><br>
-    <button onclick="setTool('brush')">🖌 Brush</button>
-    <button onclick="setTool('eraser')">🩹 Eraser</button>
-  </div>
+      <!-- Whiteboard -->
+      <div id="whiteboard" class="section card">
+        <h3>🎨 Whiteboard</h3>
+        <div id="whiteboard-controls" style="margin-bottom: 10px;">
+          <label>Color: <input type="color" id="colorPicker" value="#000000"></label>
+          <label style="margin-left: 20px;">
+            Brush Size: <input type="range" id="brushSize" min="1" max="20" value="3">
+          </label>
+          <button onclick="setTool('brush')">🖌 Brush</button>
+          <button onclick="setTool('eraser')">🩹 Eraser</button>
+        </div>
+        <canvas id="board" width="600" height="300"></canvas>
+      </div>
 
-  <!-- Document -->
-  <div id="docSec" class="section">
-    <h3>Document</h3>
-    <textarea id="doc" placeholder="Start typing..."></textarea>
-  </div>
+      <!-- Document -->
+      <div id="docSec" class="section card">
+        <h3>📝 Document</h3>
+<div id="doc" contenteditable="true" 
+     style="width:100%; height:300px; border:1px solid #ccc; padding:8px; overflow-y:auto;">
+</div>
+      </div>
 
-  <!-- Clipboard -->
-  <div id="clipboard" class="section">
-    <h3>Clipboard</h3>
-    <button onclick="copyFromClipboard()">📋 Sync My Clipboard</button>
-    <div id="clipboardBox"><i>No clipboard items yet</i></div>
-  </div>
+      <!-- Clipboard -->
+      <div id="clipboard" class="section card">
+        <h3>📋 Clipboard</h3>
+        <button onclick="copyFromClipboard()">📋 Sync My Clipboard</button>
+        <div id="clipboardBox"><i>No clipboard items yet</i></div>
+      </div>
+    </div>
+
+    <!-- Right: Sidebar -->
+    <aside class="sidebar card">
+      <h3>👥 Online Users</h3>
+      <ul id="userList"></ul>
+    </aside>
+  </main>
 
   <script src="room.js"></script>
 </body>
