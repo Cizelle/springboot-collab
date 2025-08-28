@@ -14,17 +14,14 @@ public class DocumentController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    // Receive document updates and broadcast to the same room
+    // same room updates
     @MessageMapping("/{roomId}/doc")
     public void updateDoc(@DestinationVariable String roomId, Map<String, Object> payload) {
-        // payload should contain { user, content }
         messagingTemplate.convertAndSend("/topic/" + roomId + "/document", payload);
     }
 
-    // Optional: Handle cursor updates (live caret positions)
     @MessageMapping("/{roomId}/docCursor")
     public void updateCursor(@DestinationVariable String roomId, Map<String, Object> payload) {
-        // payload should contain { user, cursor }
         messagingTemplate.convertAndSend("/topic/" + roomId + "/docCursor", payload);
     }
 }

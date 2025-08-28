@@ -14,10 +14,8 @@ public class WhiteboardController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    // Receive drawing events from a client and broadcast to the same room
     @MessageMapping("/{roomId}/draw")
     public void draw(@DestinationVariable String roomId, Map<String, Object> payload) {
-        // Forward JSON data (x, y, user, color, size, etc.) to all users in the room
         messagingTemplate.convertAndSend("/topic/" + roomId + "/whiteboard", payload);
     }
 }

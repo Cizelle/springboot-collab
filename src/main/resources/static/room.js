@@ -1,9 +1,7 @@
-/* ================== Variables ================== */
-/* ================== Variables ================== */
 let stompClient = null;
 const params = new URLSearchParams(window.location.search);
 let username = params.get("user") || "Anonymous";
-let roomId = params.get("roomId"); // <-- IMPORTANT: must match index.js
+let roomId = params.get("roomId"); 
 
 let userColorMap = {};
 let colors = ["#e74c3c","#3498db","#2ecc71","#f39c12","#9b59b6","#1abc9c"];
@@ -12,7 +10,7 @@ let lastX = null;
 let lastY = null;
 
 
-/* ================== Connect ================== */
+// Connect  
 function connect() {
   const socket = new SockJS('/ws');
   stompClient = Stomp.over(socket);
@@ -21,7 +19,7 @@ function connect() {
     console.log("Connected: " + frame);
     document.getElementById("roomInfo").textContent = `Room: ${roomId}`;
 
-    // --- Subscriptions ---
+    //  Subscriptions
     stompClient.subscribe(`/topic/${roomId}/chat`, (msg) => {
   const data = JSON.parse(msg.body);
   showMessage(`${data.user}: ${data.content}`);
@@ -33,7 +31,7 @@ function connect() {
     stompClient.subscribe(`/topic/${roomId}/clipboard`, (msg) => handleClipboard(msg));
     stompClient.subscribe(`/topic/${roomId}/presence`, (msg) => handlePresence(msg));
 
-    // --- Announce presence ---
+    //  Announce presence 
     stompClient.send(`/app/${roomId}/presence`, {}, JSON.stringify({
       type: "JOIN",
       user: username
@@ -48,7 +46,7 @@ function connect() {
   });
 }
 
-/* ================== Presence ================== */
+// Presence 
 let onlineUsers = [];
 
 function handlePresence(msg) {
@@ -79,7 +77,7 @@ function renderUserList() {
   });
 }
 
-/* ================== Chat ================== */
+// Chat
 function sendMessage() {
   const msg = document.getElementById("msgInput").value;
   stompClient.send(`/app/${roomId}/chat`, {}, JSON.stringify({ user: username, content: msg }));
@@ -94,7 +92,7 @@ function showMessage(msg) {
   chat.scrollTop = chat.scrollHeight;
 }
 
-/* ================== Whiteboard ================== */
+// Whiteboard
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 let drawing = false;
@@ -180,7 +178,7 @@ function drawOnCanvas(x, y, lastX, lastY, color, size, user) {
 
 
 
-/* ================== Document ================== */
+// Document 
 const docArea = document.getElementById("doc");
 
 function handleDocument(msg) {
@@ -281,7 +279,7 @@ docArea.addEventListener("beforeinput", (e) => {
   }
 });
 
-/* ================== Clipboard ================== */
+// Clipboard 
 function copyFromClipboard() {
   navigator.clipboard.read().then(items => {
     for (let item of items) {
@@ -332,12 +330,12 @@ function handleClipboard(msg) {
   box.scrollTop = box.scrollHeight;
 }
 
-/* ================== Sections ================== */
+// Sections
 function showSection(id) {
   document.querySelectorAll(".section").forEach(sec => sec.style.display = "none");
   document.getElementById(id).style.display = "block";
 }
 
-/* ================== Init ================== */
+// Init
 connect();
 showSection("chat");

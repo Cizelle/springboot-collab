@@ -20,7 +20,6 @@ public class CollabWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        // broadcast received message to all connected clients
         for (WebSocketSession s : sessions) {
             if (s.isOpen()) {
                 s.sendMessage(message);

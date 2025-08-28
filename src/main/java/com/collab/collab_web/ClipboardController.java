@@ -10,6 +10,6 @@ public class ClipboardController {
     @MessageMapping("/clipboard")
     @SendTo("/topic/clipboard")
     public ClipboardMessage updateClipboard(ClipboardMessage msg) {
-        return msg; // broadcast (user + type + data)
+        return msg;
     }
 }

@@ -18,7 +18,6 @@ public class PresenceController {
 
     @MessageMapping("/{roomId}/presence")
     public void handlePresence(@DestinationVariable String roomId, Map<String, String> message) {
-        // Broadcast JOIN or LEAVE to everyone in the room
         messagingTemplate.convertAndSend("/topic/" + roomId + "/presence", message);
     }
 }

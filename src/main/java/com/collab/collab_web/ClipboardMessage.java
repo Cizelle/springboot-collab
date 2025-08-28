@@ -2,7 +2,7 @@ package com.collab.collab_web;
 
 public class ClipboardMessage {
     private String user;
-    private String type; // "text" or "image"
+    private String type;
     private String data;
 
     public ClipboardMessage() {

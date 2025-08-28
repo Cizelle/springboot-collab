@@ -15,25 +15,25 @@ public class CollabController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    // --- Chat ---
+    // Chat
     @MessageMapping("/{roomId}/chat")
     public void handleChat(@DestinationVariable String roomId, @Payload Map<String, String> msg) {
         messagingTemplate.convertAndSend("/topic/" + roomId + "/chat", msg);
     }
 
-    // --- Whiteboard ---
+    // Whiteboard
     @MessageMapping("/{roomId}/whiteboard")
     public void handleWhiteboard(@DestinationVariable String roomId, @Payload Map<String, Object> data) {
         messagingTemplate.convertAndSend("/topic/" + roomId + "/whiteboard", data);
     }
 
-    // --- Document ---
+    // Document
     @MessageMapping("/{roomId}/document")
     public void handleDocument(@DestinationVariable String roomId, @Payload Map<String, Object> data) {
         messagingTemplate.convertAndSend("/topic/" + roomId + "/document", data);
     }
 
-    // --- Clipboard ---
+    // Clipboard
     @MessageMapping("/{roomId}/clipboard")
     public void handleClipboard(@DestinationVariable String roomId, @Payload Map<String, Object> data) {
         messagingTemplate.convertAndSend("/topic/" + roomId + "/clipboard", data);

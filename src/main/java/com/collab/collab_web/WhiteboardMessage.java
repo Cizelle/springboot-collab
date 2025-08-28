@@ -6,7 +6,7 @@ public class WhiteboardMessage {
     private String color;
     private Integer size;
     private Boolean eraser;
-    private Boolean clear; // optional flag to clear the board
+    private Boolean clear;
 
     public WhiteboardMessage() {
     }
