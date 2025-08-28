@@ -1,5 +1,5 @@
 You can view the live backend API here:
-[https://collab-w-me.onrender.com/](https://collab-w-me.onrender.com/)
+[Collab-w-Me](https://collab-w-me.onrender.com/)
 
 To run this project locally, follow these steps:
 
