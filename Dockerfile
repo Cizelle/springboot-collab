@@ -1,5 +1,5 @@
 # Use a JDK base image to build your application
-FROM openjdk:17-jdk-alpine AS build
+FROM eclipse-temurin:17-jdk-alpine AS build
 
 # Set the working directory
 WORKDIR /app
@@ -16,7 +16,7 @@ COPY src ./src
 RUN ./mvnw clean package -DskipTests
 
 # Use a clean, small image for the final runtime
-FROM openjdk:17-jre-alpine
+FROM eclipse-temurin:17-jre-alpine
 
 # Copy the built JAR from the build stage
 COPY --from=build /app/target/*.jar app.jar
